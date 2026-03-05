@@ -16,8 +16,37 @@ export function ConsumerVault() {
 
     const filtered = consumers.filter(c => c.id.includes(searchTerm) || c.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const handleToggleDisconnect = (id: string) => {
-        setConsumers(prev => prev.map(c => c.id === id ? { ...c, disconnected: !c.disconnected } : c));
+    const handleToggleDisconnect = async (id: string) => {
+        setConsumers(prev => prev.map(c => {
+            if (c.id === id) {
+                const newDisconnectedState = !c.disconnected;
+
+                // If this is the specific ESP32 node, execute API call to local bridge server
+                if (id === 'C-441092') {
+                    // disconnected = true means we want to cut power (bulb off)
+                    // disconnected = false means we want to restore power (bulb on)
+                    const newState = newDisconnectedState ? 'off' : 'on';
+
+                    // Use the same host as the dashboard for the API call
+                    const apiHost = window.location.hostname;
+                    fetch(`http://${apiHost}:3000/state`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ state: newState })
+                    }).then(res => {
+                        if (!res.ok) throw new Error("Server responded with error");
+                    }).catch(err => {
+                        console.error("Failed to update hardware bulb state", err);
+                        alert("Hardware Link Failed: Could not reach the bridge server on port 3000.");
+                    });
+                }
+
+                return { ...c, disconnected: newDisconnectedState };
+            }
+            return c;
+        }));
     };
 
     return (
