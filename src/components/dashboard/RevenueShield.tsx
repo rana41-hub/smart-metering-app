@@ -1,18 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingDown, AlertTriangle } from 'lucide-react';
 
-const mockData = [
-    { time: '00:00', sent: 4000, billed: 3900 },
-    { time: '04:00', sent: 3500, billed: 3400 },
-    { time: '08:00', sent: 7000, billed: 6100 },
-    { time: '12:00', sent: 8500, billed: 7100 },
-    { time: '16:00', sent: 9200, billed: 7500 }, // Huge loss spike
-    { time: '20:00', sent: 8000, billed: 7800 },
-];
+const generateInitialData = () => {
+    const data = [];
+    const now = new Date();
+    for (let i = 20; i >= 0; i--) {
+        const time = new Date(now.getTime() - i * 60000);
+        const sent = 5000 + Math.random() * 4000;
+        data.push({
+            time: time.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }),
+            sent: Math.floor(sent),
+            billed: Math.floor(sent * (0.8 + Math.random() * 0.15))
+        });
+    }
+    return data;
+};
 
 export function RevenueShield() {
-    const currentATCLoss = 18.5; // Example exceeding 15% threshold
+    const [data, setData] = useState(generateInitialData());
+    const [currentATCLoss, setCurrentATCLoss] = useState(18.5);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setData(prev => {
+                const newTime = new Date();
+                const newSent = 5000 + Math.random() * 4000;
+                const newBilled = newSent * (0.8 + Math.random() * 0.15);
+                
+                // Also slightly update AT&C loss
+                const newLoss = ((newSent - newBilled) / newSent) * 100;
+                setCurrentATCLoss(prevLoss => Number(((prevLoss * 0.8) + (newLoss * 0.2)).toFixed(1)));
+                
+                const newDataPoint = {
+                    time: newTime.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }),
+                    sent: Math.floor(newSent),
+                    billed: Math.floor(newBilled)
+                };
+                
+                return [...prev.slice(1), newDataPoint];
+            });
+        }, 2500);
+        return () => clearInterval(interval);
+    }, []);
+
     const isHighLoss = currentATCLoss > 15;
 
     return (
@@ -45,7 +76,7 @@ export function RevenueShield() {
 
                 <div className="flex-1 w-full relative">
                     <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={mockData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                        <AreaChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorSent" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3} />

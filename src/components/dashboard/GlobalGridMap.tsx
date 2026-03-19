@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { NodeDetailSidebar } from './NodeDetailSidebar';
@@ -17,11 +17,20 @@ const icons = {
     stable: createCustomIcon('bg-cyan-glow', false),
     tamper: createCustomIcon('bg-red-glow', true),
     offline: createCustomIcon('bg-slate-500', false),
-};
+} as const;
+
+interface GridNode {
+    id: string;
+    lat: number;
+    lng: number;
+    status: 'stable' | 'tamper' | 'offline';
+    wattage: number;
+    lastPing: string;
+}
 
 // Generate Mock Data around Lucknow/Kanpur bounding box
-const generateNodes = (count: number) => {
-    const nodes = [];
+const generateNodes = (count: number): GridNode[] => {
+    const nodes: GridNode[] = [];
     // Approx bounds for Lucknow to Kanpur
     const latMin = 26.4;
     const latMax = 26.9;
@@ -30,7 +39,7 @@ const generateNodes = (count: number) => {
 
     for (let i = 0; i < count; i++) {
         const statusRand = Math.random();
-        let status: 'stable' | 'tamper' | 'offline' = 'stable';
+        let status: GridNode['status'] = 'stable';
         if (statusRand > 0.85) status = 'tamper';
         else if (statusRand > 0.75) status = 'offline';
 
@@ -47,8 +56,10 @@ const generateNodes = (count: number) => {
 };
 
 export function GlobalGridMap() {
-    const [nodes, setNodes] = useState<any[]>([]);
-    const [selectedNode, setSelectedNode] = useState<any | null>(null);
+    const [nodes, setNodes] = useState<GridNode[]>([]);
+    const [selectedNode, setSelectedNode] = useState<GridNode | null>(null);
+
+    const hasTamper = nodes.some(n => n.status === 'tamper');
 
     useEffect(() => {
         setNodes(generateNodes(60)); // 60 simulated nodes
@@ -99,6 +110,17 @@ export function GlobalGridMap() {
                         node={selectedNode}
                         onClose={() => setSelectedNode(null)}
                     />
+                )}
+                
+                {/* Red Alert Animation Overlay */}
+                {hasTamper && (
+                    <>
+                        <div className="absolute inset-0 border-4 border-red-500/50 rounded-md pointer-events-none z-[400] animate-[pulse_2s_ease-in-out_infinite] shadow-[inset_0_0_50px_rgba(255,0,0,0.3)]" />
+                        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-red-600/90 text-white px-4 py-1.5 rounded uppercase font-mono text-xs font-bold tracking-[0.2em] shadow-[0_0_20px_rgba(255,0,0,0.8)] z-[500] animate-bounce flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+                            CRITICAL ALERTS: {nodes.filter(n => n.status === 'tamper').length} ACTIVE TAMPERS DETECTED
+                        </div>
+                    </>
                 )}
             </div>
         </div>

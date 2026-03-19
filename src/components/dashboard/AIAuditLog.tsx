@@ -8,12 +8,16 @@ const initialLogs = [
 ];
 
 const liveMessages = [
-    { msg: 'GPS mismatch on Meter 8821 - Geo-Fence Alert Triggered.', type: 'error' },
-    { msg: 'Node C-7734 offline. Probable tampering attempt.', type: 'error' },
-    { msg: 'Rolling blackout initiated in Sector 4 (Load cap exceeded).', type: 'warn' },
-    { msg: 'Payment received for Account C-9923. Restoring line.', type: 'success' },
-    { msg: 'Recalculating AT&C losses across Zone B...', type: 'info' },
-    { msg: 'Wave pattern anomaly detected (Phase B). Flagging Katiya risk.', type: 'error' }
+    { msg: 'Predictive load-shedding initialized. Estimated grid savings: 450MW.', type: 'warn' },
+    { msg: 'Neural net flagged sub-station Delta for predictive maintenance.', type: 'warn' },
+    { msg: 'Rerouting micro-grid surplus from Zone A to Zone B to balance demand.', type: 'success' },
+    { msg: 'Machine learning model detects 94% probability of local transformer overload in Sector 9.', type: 'error' },
+    { msg: 'Automated Katiya bypass detected on Node C-5942. Discarding fake readings...', type: 'error' },
+    { msg: 'Generating predictive billing model for next quarter based on ambient temperature forecasts.', type: 'info' },
+    { msg: 'Drone swarm dispatched for visual inspection of Line 44-B voltage sags.', type: 'info' },
+    { msg: 'Smart meter C-881 offline. Activating localized mesh-network recovery routing.', type: 'warn' },
+    { msg: 'Optimizing reactive power compensation. Power factor improved to 0.98.', type: 'success' },
+    { msg: 'Detecting anomalous harmonic distortion at Industrial Park. Isolating feedback loop.', type: 'error' }
 ];
 
 export function AIAuditLog() {
@@ -21,11 +25,11 @@ export function AIAuditLog() {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // Simulate live streaming logs
+
         const interval = setInterval(() => {
             const newMsg = liveMessages[Math.floor(Math.random() * liveMessages.length)];
             const now = new Date();
-            setLogs(prev => [...prev.slice(-49), { // Keep last 50 logs
+            setLogs(prev => [...prev.slice(-49), {
                 time: now.toLocaleTimeString('en-GB', { hour12: false }),
                 msg: newMsg.msg,
                 type: newMsg.type

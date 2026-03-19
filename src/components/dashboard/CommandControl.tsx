@@ -23,7 +23,12 @@ export function CommandControl() {
                 {/* Load Shedding Slider */}
                 <div className="space-y-4">
                     <div className="flex justify-between items-end font-mono">
-                        <label className="text-xs text-slate-300 tracking-wider">GLOBAL LOAD CAP (GW)</label>
+                        <div className="flex flex-col">
+                            <label className="text-xs text-slate-300 tracking-wider">GLOBAL LOAD CAP (GW)</label>
+                            <span className="text-[10px] text-cyan-500 mt-1 flex items-center gap-1 animate-pulse">
+                                AI PREDICTED PEAK: {(loadLimit + (Math.random() * 4 - 2)).toFixed(1)}% IN 45m
+                            </span>
+                        </div>
                         <span className={`text-xl font-bold ${loadLimit < 50 ? 'text-red-500' : loadLimit < 80 ? 'text-amber-500' : 'text-cyan-400'}`}>
                             {loadLimit}%
                         </span>

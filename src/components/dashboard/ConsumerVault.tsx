@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, PowerOff, ShieldAlert, ShieldCheck } from 'lucide-react';
 
 const generateConsumers = () => [
@@ -13,6 +13,32 @@ const generateConsumers = () => [
 export function ConsumerVault() {
     const [consumers, setConsumers] = useState(generateConsumers());
     const [searchTerm, setSearchTerm] = useState('');
+
+    // Fake but realistic: Live balance decreasing and prediction changing dynamically
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setConsumers(prev => prev.map(c => {
+                // Only update if not disconnected
+                if (c.disconnected) return c;
+                
+                // Balance decreases slowly
+                const balanceDrop = Math.random() * 2;
+                // Usage increases
+                const kwhIncrease = Math.floor(Math.random() * 3);
+                // Health fluctuates slightly (-1 to +1)
+                const healthChange = Math.floor(Math.random() * 3) - 1;
+                
+                return {
+                    ...c,
+                    balance: c.balance - balanceDrop,
+                    kwh: c.kwh + kwhIncrease,
+                    health: Math.min(100, Math.max(0, c.health + healthChange))
+                };
+            }));
+        }, 3000); // Updates every 3 seconds
+
+        return () => clearInterval(interval);
+    }, []);
 
     const filtered = consumers.filter(c => c.id.includes(searchTerm) || c.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
