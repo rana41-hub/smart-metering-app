@@ -1,1 +1,27 @@
+<<<<<<< HEAD
 node_modules/
+=======
+smart-metering-app/
+.dart_tool/
+.idea/
+android/
+build/
+ios/
+lib/
+linux/
+macos/
+test/
+web/
+windows/
+.flutter-plugins-dependencies
+.metadata
+Prakash-ai.png
+analysis_options.yaml
+analyze.txt
+analyze2.txt
+analyze3.txt
+prakash_app.iml
+pubspec.lock
+pubspec.yaml
+*.lock
+>>>>>>> 2c06e03c4d0b93dfbf08e2789bb8a724f591d9f7
