@@ -55,7 +55,7 @@ export function ConsumerVault() {
 
                     // Use the same host as the dashboard for the API call
                     const apiHost = window.location.hostname;
-                    fetch(`http://${apiHost}:3000/state`, {
+                    fetch(`http://${apiHost}:5000/state`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export function ConsumerVault() {
                         if (!res.ok) throw new Error("Server responded with error");
                     }).catch(err => {
                         console.error("Failed to update hardware bulb state", err);
-                        alert("Hardware Link Failed: Could not reach the bridge server on port 3000.");
+                        alert("Hardware Link Failed: Could not reach the bridge server on port 5000.");
                     });
                 }
 
