@@ -147,7 +147,13 @@ def chatbot_interaction():
         )
         return jsonify({"success": True, "reply": response.text})
     except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+        err_str = str(e)
+        if "429" in err_str or "exhausted" in err_str.lower() or "quota" in err_str.lower():
+            return jsonify({
+                "success": True, 
+                "reply": "My AI computing quota is currently exhausted (Rate Limit 429). Please wait a few minutes for the limit to reset, or provide a backup Gemini API key to the backend server."
+            })
+        return jsonify({"success": False, "error": err_str}), 500
 
 # --- LEGACY Flutter App Endpoints ---
 
