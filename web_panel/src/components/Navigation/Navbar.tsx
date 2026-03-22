@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Icon } from '../UI/Icon';
 import { NavItem } from '../../types/navigation.types';
+import { AdminControls } from './AdminControls';
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -107,6 +108,10 @@ const Navbar: React.FC = () => {
                 )}
               </Link>
             ))}
+          </div>
+
+          <div className="hidden md:flex items-center">
+            <AdminControls />
           </div>
 
           {/* Mobile Menu Button */}

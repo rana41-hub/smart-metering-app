@@ -10,6 +10,7 @@ import Routines from './pages/Routines';
 import AIConversation from './pages/AIConversation';
 import Simulation from './pages/Simulation';
 import VoiceDemo from './pages/VoiceDemo';
+import FloatingLines from './components/FloatingLines';
 
 import { NotificationProvider } from './contexts/NotificationContext';
 import './index.css';
@@ -30,7 +31,10 @@ function AppContent() {
   console.log('✅ User authenticated (or bypassed), showing main app');
   return (
     <NotificationProvider>
-      <div className="App min-h-screen serif-optimized">
+      <div className="App min-h-screen serif-optimized relative">
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }}>
+          <FloatingLines />
+        </div>
         <UserProfile />
         <Navbar />
         <main>
