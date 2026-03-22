@@ -33,7 +33,7 @@ const AIConversation: React.FC = () => {
     {
       id: '1',
       type: 'assistant',
-      content: 'Hello! I\'m your EcoSync AI Assistant. I\'m here to help you manage your smart home and energy usage efficiently. You can chat with me in any language, and I\'ll control your appliances, provide energy insights, and help optimize your home. How can I assist you today?',
+      content: 'Hello! I\'m your Prakash AI Assistant. I\'m here to help you manage your smart home and energy usage efficiently. You can chat with me in any language, and I\'ll control your appliances, provide energy insights, and help optimize your home. How can I assist you today?',
       timestamp: new Date(),
     }
   ]);
@@ -181,7 +181,7 @@ const AIConversation: React.FC = () => {
     const systemMessage: Message = {
       id: Date.now().toString(),
       type: 'assistant',
-      content: `API endpoint updated to: ${tempApiUrl}. I'm now ready to connect to your EcoSync server!`,
+      content: `API endpoint updated to: ${tempApiUrl}. I'm now ready to connect to your Prakash AI server!`,
       timestamp: new Date(),
     };
     setMessages(prev => [...prev, systemMessage]);
@@ -355,7 +355,7 @@ const AIConversation: React.FC = () => {
               </div>
               <div>
                 <h1 className="text-4xl font-heading text-white serif-optimized gradient-text">
-                  EcoSync AI Assistant
+                  Prakash AI Assistant
                 </h1>
                 <p className="font-body text-slate-300 serif-optimized leading-relaxed text-lg">
                   Your intelligent smart home energy management companion
@@ -427,7 +427,7 @@ const AIConversation: React.FC = () => {
                       className="w-full glass bg-dark-surface/30 border border-dark-surface/50 rounded-xl px-4 py-3 text-dark-text placeholder-dark-textSecondary focus:outline-none focus:border-primary focus:glow-effect transition-all duration-300"
                     />
                     <p className="text-xs text-dark-textSecondary mt-1 font-body serif-optimized">
-                      Enter your EcoSync server IP address and port
+                      Enter your Prakash AI server IP address and port
                     </p>
                   </div>
                   

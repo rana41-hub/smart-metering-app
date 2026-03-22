@@ -30,8 +30,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Hardcode a logged-in user so the dashboard works fully without authentication
   const defaultUser: User = {
     uid: 'krishnasinghprojects',
-    email: 'admin@ecosync.com',
-    displayName: 'EcoSync Admin',
+    email: 'admin@prakashai.com',
+    displayName: 'Prakash AI Admin',
     photoURL: null
   };
 

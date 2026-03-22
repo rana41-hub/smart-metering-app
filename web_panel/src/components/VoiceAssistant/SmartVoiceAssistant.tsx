@@ -26,13 +26,15 @@ const SmartVoiceAssistant: React.FC<SmartVoiceAssistantProps> = ({
   useEffect(() => {
     if (!isLoadingAppliances && appliances.length > 0) {
       showNotification({
+        title: 'Success',
         type: 'success',
         message: `Voice Assistant connected! Found ${appliances.length} smart devices.`,
         duration: 3000
       });
     } else if (!isLoadingAppliances && backendError) {
-      showNotification({
-        type: 'error',
+      showNotification({ 
+        title: 'Connection Error',
+        type: 'error', 
         message: 'Could not connect to smart home backend.',
         duration: 5000
       });
@@ -85,7 +87,7 @@ const SmartVoiceAssistant: React.FC<SmartVoiceAssistantProps> = ({
           success: true,
           appliance: {
             name: appliance.name,
-            state: currentState,
+            state: currentState as 'on' | 'off',
             location: appliance.location
           },
           message: `Certainly! ${appliance.name} is already ${currentState}, sir/madam.`
@@ -329,7 +331,7 @@ const SmartVoiceAssistant: React.FC<SmartVoiceAssistantProps> = ({
               </div>
             ) : voiceAssistant.response ? (
               <div>
-                <p className="text-dark-textSecondary text-xs mb-1">EcoSync Didi:</p>
+                <p className="text-dark-textSecondary text-xs mb-1">Prakash AI Didi:</p>
                 <p className="text-dark-text text-sm">{voiceAssistant.response}</p>
               </div>
             ) : null}

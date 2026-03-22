@@ -166,7 +166,7 @@ const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
           <div className="absolute inset-0 rounded-2xl bg-primary/10 blur-xl"></div>
         </div>
         <h2 className="text-2xl font-heading text-white mb-2 serif-optimized gradient-text">
-          EcoSync Voice Assistant
+          Prakash AI Voice Assistant
         </h2>
         <p className="text-slate-300 text-sm font-body serif-optimized">
           Control your smart home with voice commands
@@ -243,7 +243,7 @@ const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
       {/* Response Display */}
       {response && (
         <div className="mb-4 p-4 glass bg-secondary/10 rounded-xl border border-secondary/30">
-          <p className="text-sm text-secondary mb-1 font-medium font-body serif-optimized">EcoSync Response:</p>
+          <p className="text-sm text-secondary mb-1 font-medium font-body serif-optimized">Prakash AI Response:</p>
           <p className="text-white font-medium font-body serif-optimized">{response}</p>
         </div>
       )}
