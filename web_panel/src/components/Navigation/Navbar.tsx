@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Icon } from '../UI/Icon';
 import { NavItem } from '../../types/navigation.types';
-import { AdminControls } from './AdminControls';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Navbar: React.FC = () => {
@@ -110,11 +109,6 @@ const Navbar: React.FC = () => {
 
           {/* RIGHT: User Profile & Admin Controls */}
           <div className="hidden xl:flex items-center space-x-4 flex-shrink-0">
-            {/* Kill Switch Area */}
-            <AdminControls />
-            
-            <div className="h-8 w-px bg-dark-surface/30"></div>
-
             {/* Profile Dropdown Area */}
             <div className="flex items-center space-x-3 pl-2 group relative cursor-pointer">
               <div className="flex flex-col text-right">
@@ -213,10 +207,6 @@ const Navbar: React.FC = () => {
                 >
                   <Icon name="log-out" size={20} />
                 </button>
-              </div>
-              
-              <div className="bg-dark-surface/40 rounded-xl p-1">
-                <AdminControls />
               </div>
             </div>
           </div>

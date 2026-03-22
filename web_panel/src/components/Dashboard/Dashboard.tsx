@@ -8,6 +8,7 @@ import { RecentActivity } from './RecentActivity';
 import { AutonomousActions } from './AutonomousActions';
 import { Icon } from '../UI/Icon';
 import { logDashboardStatus } from '../../utils/testDashboard';
+import { AdminControls } from '../Navigation/AdminControls';
 
 const LoadingSpinner: React.FC = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -118,21 +119,24 @@ export const Dashboard: React.FC = () => {
               </p>
             </div>
             
-            <button
-              onClick={refreshData}
-              className={`glass p-3 rounded-xl interactive-glass group ${
-                isUsingFallback ? 'border border-warning/30' : ''
-              }`}
-              title={isUsingFallback ? 'Refresh (Demo Mode)' : 'Refresh Data'}
-            >
-              <Icon 
-                name="refresh-cw" 
-                size={20} 
-                className={`group-hover:rotate-180 transition-transform duration-500 ${
-                  isUsingFallback ? 'text-warning' : 'text-primary'
-                }`} 
-              />
-            </button>
+            <div className="flex items-center space-x-4">
+              <AdminControls />
+              <button
+                onClick={refreshData}
+                className={`glass p-3 rounded-xl interactive-glass group ${
+                  isUsingFallback ? 'border border-warning/30' : ''
+                }`}
+                title={isUsingFallback ? 'Refresh (Demo Mode)' : 'Refresh Data'}
+              >
+                <Icon 
+                  name="refresh-cw" 
+                  size={20} 
+                  className={`group-hover:rotate-180 transition-transform duration-500 ${
+                    isUsingFallback ? 'text-warning' : 'text-primary'
+                  }`} 
+                />
+              </button>
+            </div>
           </div>
         </motion.div>
 
