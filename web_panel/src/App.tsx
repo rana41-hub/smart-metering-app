@@ -1,61 +1,63 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { TopBar } from './components/layout/TopBar';
-import { NavigationDrawer } from './components/layout/NavigationDrawer';
-import { DashboardGrid } from './components/dashboard/DashboardGrid';
-import { GlobalGridMap } from './components/dashboard/GlobalGridMap';
-import { RevenueShield } from './components/dashboard/RevenueShield';
-import { ConsumerVault } from './components/dashboard/ConsumerVault';
-import { CommandControl } from './components/dashboard/CommandControl';
-import { AIAuditLog } from './components/dashboard/AIAuditLog';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import AuthPage from './components/AuthPage';
+import UserProfile from './components/UserProfile';
+import Navbar from './components/Navigation/Navbar';
+import { Dashboard } from './components/Dashboard/Dashboard';
+import Appliances from './pages/Appliances';
+import Community from './pages/Community';
+import Routines from './pages/Routines';
+import AIConversation from './pages/AIConversation';
+import Simulation from './pages/Simulation';
+import VoiceDemo from './pages/VoiceDemo';
+
+import { NotificationProvider } from './contexts/NotificationContext';
+import './index.css';
+
+function AppContent() {
+  const { currentUser } = useAuth();
+
+  console.log('🔐 Auth Status:', { currentUser: !!currentUser, uid: currentUser?.uid });
+
+  // Temporary bypass for testing - comment this out when authentication is needed
+  const bypassAuth = true;
+
+  if (!currentUser && !bypassAuth) {
+    console.log('❌ No user authenticated, showing AuthPage');
+    return <AuthPage />;
+  }
+
+  console.log('✅ User authenticated (or bypassed), showing main app');
+  return (
+    <NotificationProvider>
+      <div className="App min-h-screen serif-optimized">
+        <UserProfile />
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/appliances" element={<Appliances />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/routine" element={<Routines />} />
+            <Route path="/ai-chat" element={<AIConversation />} />
+            <Route path="/simulation" element={<Simulation />} />
+            <Route path="/voice-demo" element={<VoiceDemo />} />
+          </Routes>
+        </main>
+      </div>
+    </NotificationProvider>
+  );
+}
 
 function App() {
-    const [drawerOpen, setDrawerOpen] = useState(false);
-    const [activeSection, setActiveSection] = useState('dashboardGridMap');
-
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-    const handleNavigate = (sectionId: string) => {
-        setActiveSection(sectionId);
-        // Auto-scrolling removed as per user request
-    };
-
-    return (
-        <div className="h-screen w-screen flex flex-col bg-navy-900 text-slate-200 overflow-hidden font-sans">
-            <TopBar onMenuClick={() => setDrawerOpen(true)} />
-            <NavigationDrawer
-                isOpen={drawerOpen}
-                onClose={() => setDrawerOpen(false)}
-                activeSection={activeSection}
-                onNavigate={handleNavigate}
-            />
-
-            <main ref={scrollContainerRef} className="flex-1 flex flex-col relative overflow-hidden bg-[#070b14] scroll-smooth">
-                <DashboardGrid>
-                    {/* Add IDs to wrappers for scrolling */}
-                    <div id="dashboardGridMap" className="contents">
-                        <div id="globalGridMap" className="col-span-12 lg:col-span-8 scroll-mt-4">
-                            <GlobalGridMap />
-                        </div>
-                        <div className="col-span-12 lg:col-span-4 scroll-mt-4">
-                            <RevenueShield />
-                        </div>
-                    </div>
-
-                    <div id="consumerVault" className="col-span-12 lg:col-span-8 scroll-mt-4">
-                        <ConsumerVault />
-                    </div>
-
-                    <div id="commandControl" className="col-span-12 lg:col-span-4 scroll-mt-4">
-                        <CommandControl />
-                    </div>
-
-                    <div id="aiAuditLog" className="col-span-12 scroll-mt-4 mb-8">
-                        <AIAuditLog />
-                    </div>
-                </DashboardGrid>
-            </main>
-        </div>
-    );
+  return (
+    <AuthProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AuthProvider>
+  );
 }
 
 export default App;

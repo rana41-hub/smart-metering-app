@@ -1,0 +1,10 @@
+Analyzing app...
+
+  error - lib\app_scaffold.dart:12:1 - Directives must appear before any declarations. Try moving the directive before any declarations. - directive_after_declaration
+  error - lib\app_scaffold.dart:13:1 - Directives must appear before any declarations. Try moving the directive before any declarations. - directive_after_declaration
+warning - lib\screens\home_screen.dart:2:8 - Unused import: 'dart:async'. Try removing the import directive. - unused_import
+warning - lib\screens\home_screen.dart:5:8 - Unused import: 'package:prakash_app/services/api_service.dart'. Try removing the import directive. - unused_import
+warning - lib\screens\home_screen.dart:15:8 - The value of the field '_isLoading' isn't used. Try removing the field, or using it. - unused_field
+   info - lib\screens\home_screen.dart:15:8 - The private field _isLoading could be 'final'. Try making the field 'final'. - prefer_final_fields
+
+6 issues found.

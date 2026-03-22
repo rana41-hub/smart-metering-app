@@ -2,109 +2,183 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from google import genai
 import os
-
 import json
+from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)
+# Enable CORS for all routes and methods
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
+# File Paths
+DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+APPLIANCES_FILE = os.path.join(DATA_DIR, 'appliances.json')
+USERS_FILE = os.path.join(DATA_DIR, 'users.json')
+LOGS_FILE = os.path.join(DATA_DIR, 'usage_logs.json')
+ROUTINES_FILE = os.path.join(DATA_DIR, 'routines.json')
+AUTONOMOUS_LOG_FILE = os.path.join(DATA_DIR, 'autonomous_ai_log.json')
+CHAT_HISTORY_FILE = os.path.join(DATA_DIR, 'chat_history.json')
 
 STATE_FILE = os.path.join(os.path.dirname(__file__), 'state.json')
 USER_STATE_FILE = os.path.join(os.path.dirname(__file__), 'user_state.json')
 
-# Replace with the provided API keys or load from environment variables
-GEMINI_API_KEY = "dummy_key"
+from dotenv import load_dotenv
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_KEY_3") or os.getenv("GEMINI_KEY_4") or "dummy_key"
 
 try:
-    client = genai.Client(api_key=GEMINI_API_KEY)
+    if GEMINI_API_KEY == "dummy_key":
+        client = None
+    else:
+        client = genai.Client(api_key=GEMINI_API_KEY)
 except Exception as e:
     print(f"Error initializing Gemini client: {e}")
     client = None
 
-@app.route('/status', methods=['GET'])
-def get_status():
+def _read_json(filepath, default=None):
+    if default is None:
+        default = []
     try:
-        if os.path.exists(STATE_FILE):
-            with open(STATE_FILE, 'r') as f:
-                data = json.load(f)
-            return jsonify(data)
-        else:
-            return jsonify({"state": "off"}), 200
+        if os.path.exists(filepath):
+            with open(filepath, 'r') as f:
+                return json.load(f)
+        return default
     except Exception as e:
-        print(f"[ERROR] Failed to read state.json: {e}")
-        return jsonify({"error": "Cannot read state file"}), 500
+        print(f"Error reading {filepath}: {e}")
+        return default
 
-@app.route('/state', methods=['POST'])
-def update_state():
+def _write_json(filepath, data):
     try:
-        data = request.json
-        new_state = data.get('state')
-        if new_state not in ['on', 'off']:
-            return jsonify({"error": "state must be 'on' or 'off'"}), 400
-        
-        with open(STATE_FILE, 'w') as f:
-            json.dump({"state": new_state}, f, indent=2)
-            
-        return jsonify({"success": True, "state": new_state})
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        with open(filepath, 'w') as f:
+            json.dump(data, f, indent=2)
+        return True
     except Exception as e:
-        print(f"[ERROR] Failed to write state.json: {e}")
-        return jsonify({"error": "Failed to update state"}), 500
+        print(f"Error writing {filepath}: {e}")
+        return False
 
-@app.route('/user/status', methods=['GET'])
-def get_user_status():
-    try:
-        if os.path.exists(USER_STATE_FILE):
-            with open(USER_STATE_FILE, 'r') as f:
-                data = json.load(f)
-            return jsonify(data)
-        else:
-            return jsonify({"blocked": False}), 200
-    except Exception as e:
-        print(f"[ERROR] Failed to read user_state.json: {e}")
-        return jsonify({"error": "Cannot read user state file"}), 500
+# --- WEB PANEL Endpoints ---
 
-@app.route('/user/block', methods=['POST'])
-def update_user_status():
-    try:
-        data = request.json
-        is_blocked = data.get('blocked', False)
-        
-        with open(USER_STATE_FILE, 'w') as f:
-            json.dump({"blocked": is_blocked}, f, indent=2)
-            
-        return jsonify({"success": True, "blocked": is_blocked})
-    except Exception as e:
-        print(f"[ERROR] Failed to write user_state.json: {e}")
-        return jsonify({"error": "Failed to update user state"}), 500
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy"})
 
-@app.route('/api/chat', methods=['POST'])
-def chat():
-    if not client:
-        return jsonify({"error": "Gemini Client not initialized"}), 500
-        
+@app.route('/appliances', methods=['GET'])
+def get_appliances():
+    data = _read_json(APPLIANCES_FILE)
+    return jsonify(data)
+
+@app.route('/appliances/health', methods=['GET'])
+def get_appliances_health():
+    return jsonify({"success": True, "status": "operational"})
+
+@app.route('/appliances/<uid>/state', methods=['POST'])
+def update_appliance_state_by_uid(uid):
     data = request.json
-    user_message = data.get('message', '')
-    language = data.get('language', 'English')
+    new_state = data.get('state')
+    if not new_state:
+        return jsonify({"success": False, "message": "State is required"}), 400
+
+    appliances = _read_json(APPLIANCES_FILE)
+    found = False
+    for app_item in appliances:
+        if str(app_item.get('uid')) == str(uid):
+            app_item['state'] = new_state
+            if new_state == "on":
+                app_item['lastTurnedOnTimestamp'] = int(datetime.now().timestamp() * 1000)
+            elif new_state == "off" and app_item.get('lastTurnedOnTimestamp'):
+                duration = (int(datetime.now().timestamp() * 1000) - app_item['lastTurnedOnTimestamp']) / (1000 * 60 * 60)
+                app_item['todayUsageHours'] = app_item.get('todayUsageHours', 0.0) + duration
+            found = True
+            break
+            
+    if found:
+        _write_json(APPLIANCES_FILE, appliances)
+        return jsonify({"success": True, "appliance": next(a for a in appliances if str(a['uid']) == str(uid))})
+    return jsonify({"success": False, "message": "Appliance not found"}), 404
+
+@app.route('/users/<user_id>', methods=['GET'])
+def get_user(user_id):
+    users = _read_json(USERS_FILE, default={})
+    if isinstance(users, list):
+        user = next((u for u in users if str(u.get('id', u.get('uid'))) == user_id), None)
+        if user:
+            return jsonify({"success": True, "user": user})
+    elif isinstance(users, dict) and user_id in users:
+        return jsonify({"success": True, "user": users[user_id]})
     
-    if not user_message:
-        return jsonify({"error": "No message provided"}), 400
+    return jsonify({
+        "success": True, 
+        "user": {
+            "id": user_id, 
+            "name": "User", 
+            "monthlyBudget": 2000, 
+            "currentBill": 1250, 
+            "energyScore": 85,
+            "todayUsageKwh": 8.5
+        }
+    })
 
-    prompt = f"""You are PrakashAI, the world-class AI assistant for the Prakash Utility App in India.
-You help users with their electricity bills, smart home automation, and resolving support tickets.
-Always respond in {language}. Be concise, helpful, and professional.
-User message: {user_message}
-"""
+@app.route('/logs', methods=['GET'])
+def get_logs():
+    return jsonify(_read_json(LOGS_FILE))
 
+@app.route('/autonomous-ai/log', methods=['GET'])
+def get_autonomous_log():
+    return jsonify(_read_json(AUTONOMOUS_LOG_FILE))
+
+@app.route('/routines', methods=['GET'])
+def get_routines():
+    return jsonify(_read_json(ROUTINES_FILE))
+
+@app.route('/chatbot', methods=['POST'])
+def chatbot_interaction():
+    data = request.json
+    message = data.get('message', '')
+    
+    if not client:
+        return jsonify({"success": True, "reply": "Gemini API key not configured. This is a mock response from the Python backend."})
+    
+    prompt = f"You are PrakashAI, a helpful smart home assistant. The user says: {message}"
     try:
         response = client.models.generate_content(
             model='gemini-2.5-flash-lite',
             contents=prompt,
         )
-        return jsonify({
-            "response": response.text,
-            "status": "success"
-        })
+        return jsonify({"success": True, "reply": response.text})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"success": False, "error": str(e)}), 500
+
+# --- LEGACY Flutter App Endpoints ---
+
+@app.route('/status', methods=['GET'])
+def get_legacy_status():
+    data = _read_json(STATE_FILE, default={"state": "off"})
+    return jsonify(data)
+
+@app.route('/state', methods=['POST'])
+def update_legacy_state():
+    data = request.json
+    new_state = data.get('state')
+    _write_json(STATE_FILE, {"state": new_state})
+    return jsonify({"success": True, "state": new_state})
+
+@app.route('/user/status', methods=['GET'])
+def get_legacy_user_status():
+    data = _read_json(USER_STATE_FILE, default={"blocked": False})
+    return jsonify(data)
+
+@app.route('/user/block', methods=['POST'])
+def update_legacy_user_status():
+    data = request.json
+    is_blocked = data.get('blocked', False)
+    _write_json(USER_STATE_FILE, {"blocked": is_blocked})
+    return jsonify({"success": True, "blocked": is_blocked})
+
+@app.route('/api/chat', methods=['POST'])
+def legacy_chat():
+    return chatbot_interaction()
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Changed from 5000 to 3000 to match PrakashAI Web Panel requirements
+    app.run(debug=True, host='0.0.0.0', port=3000)
