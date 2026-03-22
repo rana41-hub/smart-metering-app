@@ -136,24 +136,41 @@ def chatbot_interaction():
     data = request.json
     message = data.get('message', '')
     
-    if not client:
+    # Define fallback keys in order
+    api_keys = [
+        os.getenv('GEMINI_API_KEY_2'),
+        os.getenv('GEMINI_KEY_3'),
+        os.getenv('GEMINI_KEY_4'),
+        os.getenv('GEMINI_KEY_1'),
+    ]
+    # Filter out None/empty keys
+    api_keys = [k for k in api_keys if k]
+    
+    if not api_keys:
         return jsonify({"success": True, "reply": "Gemini API key not configured. This is a mock response from the Python backend."})
     
     prompt = f"You are PrakashAI, a helpful smart home assistant. The user says: {message}"
-    try:
-        response = client.models.generate_content(
-            model='gemini-2.5-flash-lite',
-            contents=prompt,
-        )
-        return jsonify({"success": True, "reply": response.text})
-    except Exception as e:
-        err_str = str(e)
-        if "429" in err_str or "exhausted" in err_str.lower() or "quota" in err_str.lower():
-            return jsonify({
-                "success": True, 
-                "reply": "My AI computing quota is currently exhausted (Rate Limit 429). Please wait a few minutes for the limit to reset, or provide a backup Gemini API key to the backend server."
-            })
-        return jsonify({"success": False, "error": err_str}), 500
+    
+    # Try each key until one succeeds
+    for key in api_keys:
+        try:
+            temp_client = genai.Client(api_key=key)
+            response = temp_client.models.generate_content(
+                model='gemini-2.5-flash-lite',
+                contents=prompt,
+            )
+            return jsonify({"success": True, "reply": response.text})
+        except Exception as e:
+            err_str = str(e)
+            if "429" in err_str or "exhausted" in err_str.lower() or "quota" in err_str.lower():
+                continue # Try the next key!
+            return jsonify({"success": False, "error": err_str}), 500
+
+    # If all keys are exhausted
+    return jsonify({
+        "success": True, 
+        "reply": "My AI computing quota is fully exhausted across all backup keys (Rate Limit). Please wait a few minutes for the limit to reset before I can continue answering!"
+    })
 
 # --- LEGACY Flutter App Endpoints ---
 
