@@ -1,15 +1,11 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { 
-  User, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged,
-  updateProfile
-} from 'firebase/auth';
-import { auth, googleProvider } from '../firebase/config';
-import LoadingSpinner from '../components/LoadingSpinner';
+import React, { createContext, useContext, useState } from 'react';
+
+export interface User {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+}
 
 interface AuthContextType {
   currentUser: User | null;
@@ -31,36 +27,21 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const signup = async (email: string, password: string, displayName: string) => {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    if (result.user) {
-      await updateProfile(result.user, { displayName });
-    }
+  // Hardcode a logged-in user so the dashboard works fully without authentication
+  const defaultUser: User = {
+    uid: 'krishnasinghprojects',
+    email: 'admin@ecosync.com',
+    displayName: 'EcoSync Admin',
+    photoURL: null
   };
 
-  const login = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
-  };
+  const [currentUser, setCurrentUser] = useState<User | null>(defaultUser);
+  const loading = false;
 
-  const signInWithGoogle = async () => {
-    await signInWithPopup(auth, googleProvider);
-  };
-
-  const logout = async () => {
-    await signOut(auth);
-  };
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-
-    return unsubscribe;
-  }, []);
+  const signup = async () => {};
+  const login = async () => { setCurrentUser(defaultUser); };
+  const signInWithGoogle = async () => { setCurrentUser(defaultUser); };
+  const logout = async () => { setCurrentUser(null); };
 
   const value = {
     currentUser,
@@ -73,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? <LoadingSpinner /> : children}
+      {children}
     </AuthContext.Provider>
   );
 };
