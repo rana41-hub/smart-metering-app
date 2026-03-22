@@ -1,7 +1,7 @@
 // Simple test utility to verify dashboard functionality
 export const testDashboardConnection = async (): Promise<boolean> => {
   try {
-    const response = await fetch('http://localhost:3000/users/krishnasinghprojects', {
+    const response = await fetch('https://smart-metering-app.onrender.com/users/krishnasinghprojects', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

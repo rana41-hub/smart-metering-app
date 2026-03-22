@@ -40,7 +40,7 @@ export const useRoutines = () => {
     setError(null);
     
     try {
-      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/routines`;
+      const apiUrl = `${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/routines`;
       console.log('🔄 Fetching routines from:', apiUrl);
       
       const response = await fetch(apiUrl);
@@ -67,7 +67,7 @@ export const useRoutines = () => {
   // Create new routine
   const createRoutine = async (routineData: CreateRoutineData) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/routines`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/routines`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -95,7 +95,7 @@ export const useRoutines = () => {
   // Update routine
   const updateRoutine = async (routineId: string, updateData: Partial<Routine>) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/routines/${routineId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/routines/${routineId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData)
@@ -120,7 +120,7 @@ export const useRoutines = () => {
   // Delete routine
   const deleteRoutine = async (routineId: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/routines/${routineId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/routines/${routineId}`, {
         method: 'DELETE'
       });
       
@@ -140,7 +140,7 @@ export const useRoutines = () => {
   // Execute routine manually
   const executeRoutine = async (routineId: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/routines/${routineId}/execute`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/routines/${routineId}/execute`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -175,7 +175,7 @@ export const useRoutines = () => {
   // Get AI routine suggestion
   const getAIRoutineSuggestion = async (prompt: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/chatbot`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/chatbot`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

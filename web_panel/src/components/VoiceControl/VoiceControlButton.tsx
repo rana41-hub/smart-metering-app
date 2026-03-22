@@ -116,7 +116,7 @@ export const VoiceControlButton: React.FC<VoiceControlButtonProps> = ({
         setFeedback({ message: `Processing: "${command}"`, type: 'processing' });
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/chatbot`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/chatbot`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

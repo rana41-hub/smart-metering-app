@@ -134,7 +134,7 @@ export const VoiceDeviceControl: React.FC = () => {
   const fetchDevices = async () => {
     try {
       console.log('📱 Fetching devices for voice control...');
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/appliances`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/appliances`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch devices: ${response.status}`);
@@ -163,7 +163,7 @@ export const VoiceDeviceControl: React.FC = () => {
       });
       
       // Send to Ecosync Nexus AI Chatbot for natural language processing
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/chatbot`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/chatbot`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

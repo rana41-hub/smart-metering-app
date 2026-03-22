@@ -52,7 +52,7 @@ export const useAppliances = () => {
     setError(null);
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/appliances`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/appliances`);
       if (response.ok) {
         const data = await response.json();
         
@@ -86,7 +86,7 @@ export const useAppliances = () => {
 
       const newState = currentAppliance.state === 'on' ? 'off' : 'on';
       
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/appliances/${applianceId}/state`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/appliances/${applianceId}/state`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ state: newState })
@@ -124,7 +124,7 @@ export const useAppliances = () => {
     description?: string;
   }) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/appliances`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/appliances`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(applianceData)
@@ -151,7 +151,7 @@ export const useAppliances = () => {
   // Update appliance details
   const updateAppliance = async (applianceId: string, updateData: Partial<Appliance>) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/appliances/${applianceId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/appliances/${applianceId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData)
@@ -180,7 +180,7 @@ export const useAppliances = () => {
   // Delete appliance
   const deleteAppliance = async (applianceId: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/appliances/${applianceId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/appliances/${applianceId}`, {
         method: 'DELETE'
       });
       

@@ -4,8 +4,10 @@ export const AdminControls: React.FC = () => {
   const [isBlocked, setIsBlocked] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com';
+
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/user/status`)
+    fetch(`${API_BASE_URL}/user/status`)
       .then(res => res.json())
       .then(data => {
         setIsBlocked(data.blocked);
@@ -20,7 +22,7 @@ export const AdminControls: React.FC = () => {
   const toggleBlockStatus = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/block`, {
+      const res = await fetch(`${API_BASE_URL}/user/block`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ blocked: !isBlocked })

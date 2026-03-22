@@ -32,7 +32,7 @@ class ApplianceAPIService {
 
   constructor() {
     // Default to localhost:3000, but allow override via environment
-    this.baseURL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+    this.baseURL = import.meta.env.VITE_BACKEND_URL || 'https://smart-metering-app.onrender.com';
   }
 
   // Get all appliances from backend

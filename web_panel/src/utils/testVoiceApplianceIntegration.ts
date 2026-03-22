@@ -8,7 +8,7 @@ export const testVoiceApplianceButtonIntegration = async () => {
   try {
     // Test 1: Check if we can fetch appliances from the same endpoint
     console.log('\\n1. Testing Backend Connection...');
-    const response = await fetch('http://localhost:3000/appliances');
+    const response = await fetch('https://smart-metering-app.onrender.com/appliances');
     
     if (!response.ok) {
       throw new Error(`Backend not available: ${response.status}`);
@@ -71,7 +71,7 @@ export const testVoiceApplianceButtonIntegration = async () => {
     
     console.log(`  Testing with: ${testAppliance.name} (${originalState} → ${newState})`);
     
-    const controlResponse = await fetch(`http://localhost:3000/appliances/${testAppliance.uid}/state`, {
+    const controlResponse = await fetch(`https://smart-metering-app.onrender.com/appliances/${testAppliance.uid}/state`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ state: newState })
@@ -83,7 +83,7 @@ export const testVoiceApplianceButtonIntegration = async () => {
       
       // Revert back to original state
       setTimeout(async () => {
-        await fetch(`http://localhost:3000/appliances/${testAppliance.uid}/state`, {
+        await fetch(`https://smart-metering-app.onrender.com/appliances/${testAppliance.uid}/state`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ state: originalState })
@@ -98,7 +98,7 @@ export const testVoiceApplianceButtonIntegration = async () => {
     
     // Test 4: Verify state persistence
     console.log('\\n4. Testing State Persistence...');
-    const verifyResponse = await fetch(`http://localhost:3000/appliances/${testAppliance.uid}`);
+    const verifyResponse = await fetch(`https://smart-metering-app.onrender.com/appliances/${testAppliance.uid}`);
     
     if (verifyResponse.ok) {
       const verifyResult = await verifyResponse.json();
@@ -133,7 +133,7 @@ export const testVoiceApplianceButtonIntegration = async () => {
     console.log('\\n🔧 Troubleshooting:');
     console.log('1. Make sure backend server is running: node backend/index.js');
     console.log('2. Check that appliances exist in backend/data/appliances.json');
-    console.log('3. Verify frontend can reach backend at http://localhost:3000');
+    console.log('3. Verify frontend can reach backend at https://smart-metering-app.onrender.com');
     return false;
   }
 };
@@ -144,7 +144,7 @@ export const testVoiceToButtonEquivalence = async () => {
   
   try {
     // Get appliances
-    const response = await fetch('http://localhost:3000/appliances');
+    const response = await fetch('https://smart-metering-app.onrender.com/appliances');
     const appliances = await response.json();
     
     if (appliances.length === 0) {
@@ -158,7 +158,7 @@ export const testVoiceToButtonEquivalence = async () => {
     
     // Method 1: Voice Command Simulation (what voice assistant does)
     console.log('\\n🎤 Method 1: Voice Command Control');
-    const voiceControlResponse = await fetch(`http://localhost:3000/appliances/${testAppliance.uid}/state`, {
+    const voiceControlResponse = await fetch(`https://smart-metering-app.onrender.com/appliances/${testAppliance.uid}/state`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ state: testAppliance.state === 'on' ? 'off' : 'on' })
@@ -173,7 +173,7 @@ export const testVoiceToButtonEquivalence = async () => {
     
     // Method 2: Button Click Simulation (what appliance buttons do)
     console.log('\\n🖱️ Method 2: Button Click Control');
-    const buttonControlResponse = await fetch(`http://localhost:3000/appliances/${testAppliance.uid}/state`, {
+    const buttonControlResponse = await fetch(`https://smart-metering-app.onrender.com/appliances/${testAppliance.uid}/state`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ state: voiceResult.appliance?.state === 'on' ? 'off' : 'on' })

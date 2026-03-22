@@ -50,7 +50,7 @@ const AIConversation: React.FC = () => {
   // API configuration states
   const [showSettings, setShowSettings] = useState(false);
   const [apiBaseUrl, setApiBaseUrl] = useState(() => {
-    return localStorage.getItem('ecosync-api-url') || 'http://localhost:3000';
+    return localStorage.getItem('ecosync-api-url') || 'https://smart-metering-app.onrender.com';
   });
   const [tempApiUrl, setTempApiUrl] = useState(apiBaseUrl);
   
@@ -189,7 +189,7 @@ const AIConversation: React.FC = () => {
 
   // Reset API URL to default
   const resetApiUrl = () => {
-    const defaultUrl = 'http://localhost:3000';
+    const defaultUrl = 'https://smart-metering-app.onrender.com';
     setTempApiUrl(defaultUrl);
     setApiBaseUrl(defaultUrl);
     localStorage.setItem('ecosync-api-url', defaultUrl);
