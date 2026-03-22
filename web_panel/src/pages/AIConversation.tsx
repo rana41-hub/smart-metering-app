@@ -160,7 +160,7 @@ const AIConversation: React.FC = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({ message: prompt }),
     });
 
     if (!response.ok) {
@@ -168,7 +168,7 @@ const AIConversation: React.FC = () => {
     }
 
     const data = await response.json();
-    return data.response;
+    return data.reply || data.response || "No response received";
   };
 
   // Save API URL to localStorage
