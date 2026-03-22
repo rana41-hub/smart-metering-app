@@ -3,10 +3,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { Icon } from '../UI/Icon';
 import { NavItem } from '../../types/navigation.types';
 import { AdminControls } from './AdminControls';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { currentUser, logout } = useAuth();
 
   const navItems: NavItem[] = [
     {
@@ -114,6 +116,36 @@ const Navbar: React.FC = () => {
             <AdminControls />
           </div>
 
+          {/* User Profile & Logout (Merged from UserProfile.tsx) */}
+          <div className="hidden md:flex items-center space-x-4 ml-4 pl-4 border-l border-dark-surface/30">
+            {currentUser?.photoURL ? (
+              <img
+                src={currentUser.photoURL}
+                alt="Profile"
+                className="h-8 w-8 rounded-xl border border-primary/30"
+              />
+            ) : (
+              <div className="h-8 w-8 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center glow-effect">
+                <span className="text-white text-xs font-accent">PAI</span>
+              </div>
+            )}
+            <div className="flex flex-col">
+              <span className="text-sm font-heading text-dark-text leading-tight">
+                {currentUser?.displayName || currentUser?.email?.split('@')[0] || 'User'}
+              </span>
+              <span className="text-xs text-dark-textSecondary leading-tight">
+                {currentUser?.email}
+              </span>
+            </div>
+            <button
+              onClick={() => logout().catch(console.error)}
+              title="Logout"
+              className="p-2 ml-2 rounded-xl text-dark-textSecondary hover:text-danger hover:bg-danger/10 transition-colors"
+            >
+              <Icon name="log-out" size={18} />
+            </button>
+          </div>
+
           {/* Mobile Menu Button */}
           <button
             className="md:hidden p-2 rounded-xl text-dark-textSecondary hover:text-dark-text hover:bg-dark-surface/30 transition-all duration-300 backdrop-blur-sm"
@@ -159,6 +191,23 @@ const Navbar: React.FC = () => {
                 </div>
               </Link>
             ))}
+            
+            {/* Mobile Admin Controls & Logout */}
+            <div className="mt-4 pt-4 border-t border-dark-surface/30 px-4 space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-dark-textSecondary">Active User</span>
+                <span className="text-sm text-dark-text font-medium">{currentUser?.displayName || 'User'}</span>
+              </div>
+              <AdminControls />
+              <button
+                onClick={() => logout().catch(console.error)}
+                className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl text-danger bg-danger/10 hover:bg-danger/20 transition-colors mt-2"
+              >
+                <Icon name="log-out" size={18} />
+                <span>Logout</span>
+              </button>
+            </div>
+            
           </div>
         </div>
       )}
