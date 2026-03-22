@@ -180,5 +180,7 @@ def legacy_chat():
     return chatbot_interaction()
 
 if __name__ == '__main__':
-    # Changed from 5000 to 3000 to match PrakashAI Web Panel requirements
-    app.run(debug=True, host='0.0.0.0', port=3000)
+    # Render assigns a dynamic port via the PORT environment variable.
+    # Defaulting to 3000 for local development matching PrakashAI endpoints.
+    port = int(os.environ.get("PORT", 3000))
+    app.run(debug=True, host='0.0.0.0', port=port)

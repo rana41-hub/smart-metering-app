@@ -162,7 +162,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ activities = [] 
   const fetchAutonomousLogs = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/autonomous-ai/log');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com'}/autonomous-ai/log`);
       const data = await response.json();
 
       if (data.success) {

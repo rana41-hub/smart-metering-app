@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { DashboardData } from '../types/dashboard.types';
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com';
 const USER_ID = 'krishnasinghprojects';
 
 // Helper functions

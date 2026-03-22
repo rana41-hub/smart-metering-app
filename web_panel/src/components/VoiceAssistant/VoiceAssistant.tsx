@@ -18,7 +18,7 @@ const VoiceAssistant: React.FC<VoiceAssistantProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   // Backend API base URL
-  const API_BASE_URL = 'http://localhost:3000';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://smart-metering-app.onrender.com';
 
   // Send message to backend API
   const sendToBackend = async (prompt: string): Promise<string> => {
