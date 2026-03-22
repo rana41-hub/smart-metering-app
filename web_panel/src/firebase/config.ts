@@ -5,7 +5,7 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAG3CitDeRrjoMDUZCXO0ppym8T1GrJ_GA",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
   authDomain: "mits-careerboost.firebaseapp.com",
   projectId: "mits-careerboost",
   storageBucket: "mits-careerboost.firebasestorage.app",

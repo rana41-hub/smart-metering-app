@@ -1,6 +1,6 @@
 // AI Configuration
 export const AI_CONFIG = {
-  GEMINI_API_KEY: 'AIzaSyBlPE_CFryO1QoEsa97z0pNqj3E-iNxo-w',
+  GEMINI_API_KEY: import.meta.env.VITE_GEMINI_API_KEY || '',
   GEMINI_MODEL: 'gemini-1.5-flash',
   GEMINI_BASE_URL: 'https://generativelanguage.googleapis.com/v1beta/models',
   
