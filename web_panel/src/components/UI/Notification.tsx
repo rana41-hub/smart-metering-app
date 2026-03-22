@@ -67,9 +67,17 @@ const Notification: React.FC<NotificationProps> = ({
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-dark-text">{title}</p>
-        {message && (
-          <p className="text-sm text-dark-textSecondary mt-1">{message}</p>
-        )}
+        <div className="text-sm text-dark-textSecondary mt-1 leading-relaxed">
+          {message}
+          {type === 'error' && (
+            <div className="mt-2 text-[11px] text-danger/80 bg-danger/10 px-2 py-1.5 rounded border border-danger/20 font-medium">
+              It will work when connected to our device. Please watch this video to know about it more: <br/>
+              <a href="https://youtu.be/GqRE9r5_pXY?si=2z1zpVS26iEn-mer" target="_blank" rel="noopener noreferrer" className="text-cyber-blue hover:text-white underline font-bold mt-1 inline-block">
+                ▶ Watch Demo Video
+              </a>
+            </div>
+          )}
+        </div>
       </div>
       <button
         onClick={() => onClose(id)}
