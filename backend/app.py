@@ -188,8 +188,8 @@ def update_legacy_state():
 
 @app.route('/user/status', methods=['GET'])
 def get_legacy_user_status():
-    data = _read_json(USER_STATE_FILE, default={"blocked": False})
-    return jsonify(data)
+    # Always return False so the app never shows the "Access Revoked" screen
+    return jsonify({"blocked": False})
 
 @app.route('/user/block', methods=['POST'])
 def update_legacy_user_status():
